@@ -11,12 +11,12 @@ class PLResolution:
         knowledge_base.add_sentence(negated_alpha)
 
     @staticmethod
-    def _write_file(f, lst):
+    def _write_file(f, list):
         """
         Write list of clauses to the output file.
         """
-        f.write(str(len(lst)) + "\n")
-        for item in lst:
+        f.write(str(len(list)) + "\n")
+        for item in list:
             f.write(" OR ".join(item) + "\n")
 
     def pl_resolution(self, knowledge_base, alpha, output_file: str) -> bool:
@@ -72,20 +72,20 @@ class PLResolution:
                     break
 
         if matches == 1:
-            lst1 = clause1[:index1] + clause1[index1 + 1:]
-            lst2 = clause2[:index2] + clause2[index2 + 1:]
-            result = self._add_sentence(lst1, lst2)
+            list1 = clause1[:index1] + clause1[index1 + 1:]
+            list2 = clause2[:index2] + clause2[index2 + 1:]
+            result = self._add_sentence(list1, list2)
             if not result:
                 result.append("{}")
             return result
         return []
 
     @staticmethod
-    def _contains_empty(lst) -> bool:
+    def _contains_empty(list) -> bool:
         """
         Check if the list contains an empty clause.
         """
-        return "{}" in lst
+        return "{}" in list
 
     @staticmethod
     def _is_sublist(list1, list2) -> bool:
@@ -110,11 +110,11 @@ class PLResolution:
         """
         return set(clause1) == set(clause2)
 
-    def _is_not_in_list(self, ele, lst) -> bool:
+    def _is_not_in_list(self, element, list) -> bool:
         """
         Check if element is not in the list of clauses.
         """
-        return all(not self._equal(ele, ele1) for ele1 in lst)
+        return all(not self._equal(element, tmp) for tmp in list)
 
     @staticmethod
     def _add_sentence(clause1, clause2) -> list:
@@ -124,16 +124,16 @@ class PLResolution:
         combined_clause = list(clause1)
         result_set = set(tuple(subclause) for subclause in clause1)
 
-        for ele in clause2:
-            ele_tuple = tuple(ele)
-            if ele_tuple not in result_set:
-                combined_clause.append(ele)
-                result_set.add(ele_tuple)
+        for element in clause2:
+            elements_tuple = tuple(element)
+            if elements_tuple not in result_set:
+                combined_clause.append(element)
+                result_set.add(elements_tuple)
 
         return combined_clause
 
-    def _diff(self, lst1, lst2) -> list:
+    def _diff(self, list1, list2) -> list:
         """
         Find the difference between two lists of clauses.
         """
-        return [ele for ele in lst2 if self._is_not_in_list(ele, lst1)]
+        return [element for element in list2 if self._is_not_in_list(element, list1)]
