@@ -1,6 +1,6 @@
 2
 -C
-C OR -B
+-B OR C
 2
 A OR -B
 C OR -A
