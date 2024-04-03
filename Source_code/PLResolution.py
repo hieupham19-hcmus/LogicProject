@@ -8,7 +8,9 @@ class PLResolution:
             negated_alpha = alpha.replace("-", "")
         else:
             negated_alpha = "-" + alpha
-        knowledge_base.add_sentence(negated_alpha)
+
+        if not any(set(clause) == set(negated_alpha.split()) for clause in knowledge_base.sentences):
+            knowledge_base.add_sentence(negated_alpha)
 
     @staticmethod
     def _write_file(f, list):
@@ -77,6 +79,30 @@ class PLResolution:
 
         return combined_clause
 
+    @staticmethod
+    def _is_always_right(clause) -> bool:
+        """
+        Check if a clause is always true.
+        """
+        literals = set()
+        negations = set()
+
+        for literal in clause:
+            if literal.startswith("-"):
+                negations.add(literal[1:])
+            else:
+                literals.add(literal)
+
+        # Check for contradiction (A AND -A)
+        if any(lit in negations for lit in literals):
+            return False
+
+        # Check if there's any literal that makes the clause always true (A OR -A OR anything_else)
+        if any(lit not in literals and lit not in negations for lit in literals.union(negations)):
+            return True
+
+        return False
+
     def _resolve_clauses(self, clause1, clause2) -> list:
         """
         Resolve two clauses to derive a new clause.
@@ -84,7 +110,7 @@ class PLResolution:
         matches = 0
         for i, literal1 in enumerate(clause1):
             for j, literal2 in enumerate(clause2):
-                if (literal1 in literal2 or literal2 in literal1) and literal1 != literal2:
+                if (literal1 == "-" + literal2) or (literal2 == "-" + literal1):
                     matches += 1
                     if matches > 1:
                         return []
@@ -95,6 +121,12 @@ class PLResolution:
             list1 = clause1[:index1] + clause1[index1 + 1:]
             list2 = clause2[:index2] + clause2[index2 + 1:]
             result = self._add_sentence(list1, list2)
+
+            # Check if the resolvent contains contradictory literals
+            for literal in result:
+                if literal.startswith("-") and literal[1:] in result:
+                    return []
+
             if not result:
                 result.append("{}")
             return result
