@@ -1,6 +1,6 @@
 class PLResolution:
     @staticmethod
-    def _create_resolution_sentence(knowledge_base, alpha) -> None:
+    def _add_negated_alpha_to_kb(knowledge_base, alpha) -> None:
         """
         Add the negation of alpha into knowledge base.
         """
@@ -27,13 +27,6 @@ class PLResolution:
         Check if the list contains an empty clause.
         """
         return "{}" in list
-
-    @staticmethod
-    def _is_sublist(list1, list2) -> bool:
-        """
-        Check if list1 is a sublist of list2.
-        """
-        return all(item in list2 for item in list1)
 
     @staticmethod
     def _equal(clause1, clause2) -> bool:
@@ -138,7 +131,7 @@ class PLResolution:
         """
         try:
             with open(output_file, "w") as file_pointer:
-                self._create_resolution_sentence(knowledge_base, alpha)
+                self._add_negated_alpha_to_kb(knowledge_base, alpha)
                 clauses = knowledge_base.sentences
                 clauses_new = clauses
 
