@@ -120,6 +120,9 @@ class PLResolution:
                 if literal.startswith("-") and literal[1:] in result:
                     return []
 
+            # Sort the result alphabetically, ignoring negations
+            result.sort(key=lambda x: x[1:] if x.startswith("-") else x)
+
             if not result:
                 result.append("{}")
             return result
